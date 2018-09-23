@@ -38,7 +38,7 @@ class SnakeExtraHardEnv(gym.Env):
             self.viewer = plt.imshow(self.last_obs)
         else:
             self.viewer.set_data(self.last_obs)
-        plt.pause(0.1) # Default 0.1 
+        plt.pause(0.1)
         plt.draw()
 
     def seed(self, x):
