@@ -1,6 +1,8 @@
 import gym
 import gym_snake
 
+global run_with_graphics
+
 # Construct Environment
 env = gym.make('snake-v0')
 # Configure Environment
@@ -10,7 +12,7 @@ env.snake_size = 4
 env.unit_gap = 1
 env.unit_size = 10
 env.grid_size = [50, 50]
-observation = env.reset() # Constructs an instance of the game
+observation = env.reset()
 
 # Controller
 game_controller = env.controller
@@ -24,5 +26,7 @@ snakes_array = game_controller.snakes
 snake_agent = snakes_array[0]
 
 for step in range(1, 1000):
-	env.render()
-	env.step(step % 4)
+    print(run_with_graphics)
+    if run_with_graphics:
+        env.render()
+    env.step(step % 4)
