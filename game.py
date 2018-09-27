@@ -23,10 +23,10 @@ grid_pixels = grid_object.grid
 
 # Snake(s)
 snakes_array = game_controller.snakes
-snake_agent = snakes_array[0]
 
-for step in range(1, 1000):
-    print(run_with_graphics)
-    if run_with_graphics:
-        env.render()
-    env.step(step % 4)
+
+def start_simulation():
+    for step in range(1, 1000):
+        if run_with_graphics:
+            env.render()
+        env.step(step % 4)
