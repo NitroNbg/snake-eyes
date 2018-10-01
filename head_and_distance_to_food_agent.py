@@ -1,8 +1,8 @@
 from learning_agent import LearningAgent
-from state import HeadOnlyState
+from state import HeadAndDistanceToFoodState
 
 
-class HeadOnlyAgent(LearningAgent[HeadOnlyState]):
+class HeadAndDistanceToFoodAgent(LearningAgent[HeadAndDistanceToFoodState]):
 
     def __init__(self):
         super(LearningAgent, self).__init__()
@@ -46,4 +46,7 @@ class HeadOnlyAgent(LearningAgent[HeadOnlyState]):
         state.right = min_right
         state.down = min_bottom
         state.left = min_left
+        dfoodx = food.x - snake.head.x
+        dfoody = food.y - snake.head.y
+        state.dfood = [dfoodx, dfoody]
         return state
