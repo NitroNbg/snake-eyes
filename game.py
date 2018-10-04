@@ -62,7 +62,7 @@ def start_simulation():
             agent_snake_pair[available_snake()] = agents_playing[i]
         observation = env.reset()
         turn = 0
-        cumulative_reward = [0] * snakes_alive
+        cumulative_reward = [0.0] * snakes_alive
         terminated = False
         print("------------------------------------------------------------------------------------")
         while not terminated:
@@ -76,10 +76,11 @@ def start_simulation():
             observation, reward, done, info = env.step(action)
             turn = turn + 1
             for i in range(0, len(reward)):
-                cumulative_reward[i] = GAMMA * cumulative_reward[i] + reward[i]
+                cumulative_reward[i] = cumulative_reward[i] + reward[i]
                 if reward[i] == -1:
-                    print("Snake #%d died after turn %d with %d points." % (i, turn, cumulative_reward[i]))
+                    print("Snake #%d died after turn %d with %.2f points." % (i, turn, cumulative_reward[i]))
                     snakes.kill_snake(i)
                     terminated = snakes.terminated()
             if run_with_graphics:
                 env.render()
+    print("Finished running all episodes")

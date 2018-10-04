@@ -4,6 +4,9 @@ import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optim
+from memory import ReplayMemory
+from memory import Transition
 from hyperparameters import EPS_START
 from hyperparameters import EPS_END
 from hyperparameters import EPS_DECAY
@@ -24,7 +27,8 @@ class DeepQNetwork(nn.Module):
 
     def forward(self, input_param):
         intermediate = F.relu(self.initial(input_param))
-        return self.hidden(intermediate)
+        intermediate = F.relu(self.hidden(intermediate))
+        return self.out(intermediate)
 
 
 class LearningAgent(Generic[State]):
@@ -32,13 +36,14 @@ class LearningAgent(Generic[State]):
 
     def __init__(self, input_size, capacity, device):
         self.player_index = -1
-        self.memory = []
         self.capacity = capacity
         self.device = device
         self.policy_net = DeepQNetwork(input_size).to(device)
         self.target_net = DeepQNetwork(input_size).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.target_net.eval()
+        self.optimizer = optim.RMSprop(self.policy_net.parameters())
+        self.memory = ReplayMemory(capacity=capacity)
 
     def __str__(self):
         return "LearningAgent"
@@ -51,6 +56,10 @@ class LearningAgent(Generic[State]):
                 return self.policy_net(state.to_tensor()).max(0)[1]
         else:
             return torch.Tensor([[random.randrange(4)]], device=self.device)
+
+    def optimize(self):
+        transitions = self.memory.sample(500)
+        normalized_transitions = Transition(*zip(*transitions))
 
     def set_index(self, index):
         self.player_index = index

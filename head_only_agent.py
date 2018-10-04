@@ -6,7 +6,7 @@ import numpy as np
 class HeadOnlyAgent(LearningAgent[HeadOnlyState]):
 
     def __init__(self, device):
-        super(HeadOnlyAgent, self).__init__(input_size=4, capacity=100, device=device)
+        super(HeadOnlyAgent, self).__init__(input_size=4, capacity=1000, device=device)
 
     def __str__(self):
         return "HeadOnlyAgent"

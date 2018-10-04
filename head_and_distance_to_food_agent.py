@@ -6,7 +6,7 @@ import numpy as np
 class HeadAndDistanceToFoodAgent(LearningAgent[HeadAndDistanceToFoodState]):
 
     def __init__(self, device):
-        super(HeadAndDistanceToFoodAgent, self).__init__(input_size=6, capacity=100, device=device)
+        super(HeadAndDistanceToFoodAgent, self).__init__(input_size=6, capacity=1000, device=device)
 
     def __str__(self):
         return "[HeadAndDistanceToFoodAgent]"

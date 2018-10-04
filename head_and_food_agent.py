@@ -6,7 +6,7 @@ import numpy as np
 class HeadAndFoodAgent(LearningAgent[HeadAndAbsoluteFoodState]):
 
     def __init__(self, device):
-        super(HeadAndFoodAgent, self).__init__(input_size=6, capacity=100, device=device)
+        super(HeadAndFoodAgent, self).__init__(input_size=6, capacity=1000, device=device)
 
     def __str__(self):
         return "HeadAndFoodAgent"
