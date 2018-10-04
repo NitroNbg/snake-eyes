@@ -12,8 +12,7 @@ def init_snakes(p_snakes):
     global snakes_alive
     snakes = p_snakes
     free_snake_indices = list(range(0, len(snakes)))
-    for i in range(0, len(snakes)):
-        snakes_alive[i] = True
+    snakes_alive = [True] * len(snakes)
 
 
 def available_snake():
@@ -21,7 +20,7 @@ def available_snake():
     global free_snake_indices
     index = random.randint(0, len(free_snake_indices) - 1)
     ret_snake = snakes[free_snake_indices[index]]
-    print("Returning snake with indent %d" % free_snake_indices[index])
+    # print("Returning snake with indent %d" % free_snake_indices[index])
     del free_snake_indices[index]
     return ret_snake
 
@@ -37,5 +36,14 @@ def kill_snake(i):
 
 
 def reset_snake_life():
+    global free_snake_indices
+    free_snake_indices = list(range(0, len(snakes_alive)))
     for i in range(0, len(snakes)):
         snakes_alive[i] = True
+
+
+def terminated():
+    for i in range(0, len(snakes_alive)):
+        if snakes_alive[i]:
+            return False
+    return True

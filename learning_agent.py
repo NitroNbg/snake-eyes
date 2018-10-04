@@ -9,47 +9,51 @@ from hyperparameters import EPS_END
 from hyperparameters import EPS_DECAY
 State = TypeVar('State')
 
+GAMMA = 0.9
+
 
 class DeepQNetwork(nn.Module):
     """Class that contains the logic for data crunching"""
 
-    def __init__(self):
+    def __init__(self, input_size):
         super(DeepQNetwork, self).__init__()
-        self.conv1 = nn.Conv2d(3, 16, kernel_size=5, stride=2)
-        self.bn1 = nn.BatchNorm2d(16)
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=5, stride=2)
-        self.bn2 = nn.BatchNorm2d(32)
-        self.conv3 = nn.Conv2d(32, 32, kernel_size=5, stride=2)
-        self.bn3 = nn.BatchNorm2d(32)
-        self.out = nn.Linear(448, 4)
+        n_hidden = 10
+        self.initial = nn.Linear(input_size, n_hidden)
+        self.hidden = nn.Linear(n_hidden, n_hidden)
+        self.out = nn.Linear(n_hidden, 4)
 
     def forward(self, input_param):
-        intermediate = F.relu(self.bn1(self.conv1(input_param)))
-        intermediate = F.relu(self.bn2(self.conv2(intermediate)))
-        intermediate = F.relu(self.bn3(self.conv3(intermediate)))
-        return self.out(intermediate.view(intermediate.size(0), -1))
+        intermediate = F.relu(self.initial(input_param))
+        return self.hidden(intermediate)
 
 
 class LearningAgent(Generic[State]):
     """Base class for learning agents containing the basic fields and method definitions"""
 
-    def __init__(self, capacity, device):
+    def __init__(self, input_size, capacity, device):
+        self.player_index = -1
         self.memory = []
         self.capacity = capacity
         self.device = device
-        self.policy_net = DeepQNetwork().to(device)
-        self.target_net = DeepQNetwork().to(device)
+        self.policy_net = DeepQNetwork(input_size).to(device)
+        self.target_net = DeepQNetwork(input_size).to(device)
         self.target_net.load_state_dict(self.policy_net.state_dict())
         self.target_net.eval()
 
-    def play(self, state, turn, device='cpu'):
+    def __str__(self):
+        return "LearningAgent"
+
+    def play(self, state, turn):
         sample = random.random()
         eps_threshold = EPS_END + (EPS_START - EPS_END) * math.exp(-1 * turn / EPS_DECAY)
         if sample > eps_threshold:
             with torch.no_grad():
-                return self.policy_net(state).max(1)[1].view(1, 1)
+                return self.policy_net(state.to_tensor()).max(0)[1]
         else:
-            return torch.Tensor([[random.randrange(4)]], device=device, dtype=torch.Tensor.long())
+            return torch.Tensor([[random.randrange(4)]], device=self.device)
+
+    def set_index(self, index):
+        self.player_index = index
 
     def extrapolate_state(self, snake, snakes, food, grid):
-        return
+        raise NotImplementedError("extrapolate_state not implemented")

@@ -1,47 +1,50 @@
 from learning_agent import LearningAgent
 from state import HeadOnlyState
+import numpy as np
 
 
 class HeadOnlyAgent(LearningAgent[HeadOnlyState]):
 
-    def __init__(self):
-        super(LearningAgent, self).__init__()
-        self.memory.printSelf()
+    def __init__(self, device):
+        super(HeadOnlyAgent, self).__init__(input_size=4, capacity=100, device=device)
+
+    def __str__(self):
+        return "HeadOnlyAgent"
 
     def extrapolate_state(self, snake, snakes, food, grid):
         found = False
-        left_obstacle = [snake.head.x, snake.head.y]
+        left_obstacle = [snake.head[0], snake.head[1]]
         while not found and left_obstacle[0] > 0:
-            left_obstacle = [left_obstacle[0] - 1, snake.head.y]
+            left_obstacle = [left_obstacle[0] - 1, snake.head[1]]
             for i in range(0, len(snakes)):
-                if snake.head.x != snakes[i].head.x or snake.head.y != snakes[i].head.y:
-                    found = found or left_obstacle in snakes[i].body
-        min_left = snake.head.x - left_obstacle[0]
+                if snake.head[0] != snakes[i].head[0] or snake.head[1] != snakes[i].head[1]:
+                    found = found or np.any(snakes[i].body == left_obstacle)
+        min_left = snake.head[0] - left_obstacle[0]
         found = False
-        right_obstacle = [snake.head.x, snake.head.y]
-        while not found and right_obstacle[0] < grid.x:
-            right_obstacle = [right_obstacle[0] + 1, snake.head.y]
+        right_obstacle = [snake.head[0], snake.head[1]]
+        while not found and right_obstacle[0] < grid[0]:
+            right_obstacle = [right_obstacle[0] + 1, snake.head[1]]
             for i in range(0, len(snakes)):
-                if snake.head.x != snakes[i].head.x or snake.head.y != snakes[i].head.y:
-                    found = found or right_obstacle in snakes[i].body
-        min_right = right_obstacle[0] - snake.head.x
+                if snake.head[0] != snakes[i].head[0] or snake.head[1] != snakes[i].head[1]:
+                    found = found or np.any(snakes[i].body == right_obstacle)
+        min_right = right_obstacle[0] - snake.head[0]
         found = False
-        top_obstacle = [snake.head.x, snake.head.y]
+        top_obstacle = [snake.head[0], snake.head[1]]
         while not found and top_obstacle[1] > 0:
-            top_obstacle = [snake.head.x, top_obstacle[1] - 1]
+            top_obstacle = [snake.head[0], top_obstacle[1] - 1]
             for i in range(0, len(snakes)):
-                if snake.head.x != snakes[i].head.x or snake.head.y != snakes[i].head.y:
-                    found = found or top_obstacle in snakes[i].body
-        min_top = snake.head.y - top_obstacle[1]
+                if snake.head[0] != snakes[i].head[0] or snake.head[1] != snakes[i].head[1]:
+                    found = found or np.any(snakes[i].body == top_obstacle)
+        min_top = snake.head[1] - top_obstacle[1]
         found = False
-        bottom_obstacle = [snake.head.x, snake.head.y]
-        while not found and bottom_obstacle[0] < grid.y:
-            bottom_obstacle = [snake.head.x, bottom_obstacle[1] + 1]
+        bottom_obstacle = [snake.head[0], snake.head[1]]
+        while not found and bottom_obstacle[1] < grid[1]:
+            bottom_obstacle = [snake.head[0], bottom_obstacle[1] + 1]
             for i in range(0, len(snakes)):
-                if snake.head.x != snakes[i].head.x or snake.head.y != snakes[i].head.y:
-                    found = found or bottom_obstacle in snakes[i].body
-        min_bottom = bottom_obstacle[1] - snake.head.y
-        state = HeadOnlyState.__init__()
+                if snake.head[0] != snakes[i].head[0] or snake.head[1] != snakes[i].head[1]:
+                    found = found or np.any(snakes[i].body == bottom_obstacle)
+        min_bottom = bottom_obstacle[1] - snake.head[1]
+        state = HeadOnlyState()
         state.top = min_top
         state.right = min_right
         state.down = min_bottom
