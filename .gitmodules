@@ -1,0 +1,3 @@
+[submodule "gym_snake"]
+	path = gym_snake
+	url = https://github.com/grantsrb/Gym-Snake.git
